@@ -36,10 +36,12 @@ const databases = {
   },
 };
 
-const main = async database => {
+const languages = ['js', 'ts'];
+
+const main = async ({ language, database }) => {
   try {
     await cleanTestApp(appName);
-    await generateTestApp({ appName, database });
+    await generateTestApp({ appName, database, useTypeScript: language === 'ts' });
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -51,25 +53,34 @@ yargs
     '$0 [databaseName]',
     'Create test app',
     yargs => {
-      yargs.positional('databaseName', {
-        choices: Object.keys(databases),
-      });
+      yargs
+        .positional('databaseName', {
+          choices: Object.keys(databases),
+        })
+        .option('language', {
+          default: 'js',
+          choices: languages,
+        });
     },
     argv => {
-      const { databaseName } = argv;
+      const { databaseName, language } = argv;
+
       if (databaseName) {
-        return main(databases[databaseName]);
+        return main({ language, database: databases[databaseName] });
       }
 
       return main({
-        client: argv.dbclient,
-        connection: {
-          host: argv.dbhost,
-          port: argv.dbport,
-          database: argv.dbname,
-          username: argv.dbusername,
-          password: argv.dbpassword,
-          filename: argv.dbfile,
+        language,
+        database: {
+          client: argv.dbclient,
+          connection: {
+            host: argv.dbhost,
+            port: argv.dbport,
+            database: argv.dbname,
+            username: argv.dbusername,
+            password: argv.dbpassword,
+            filename: argv.dbfile,
+          },
         },
       });
     }

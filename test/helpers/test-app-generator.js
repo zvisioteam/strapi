@@ -25,8 +25,9 @@ const cleanTestApp = appName => {
  * @param {Object} options - Options
  * @param {string} options.appName - Name of the app that will be created (also the name of the folder)
  * @param {database} options.database - Arguments to create the testApp with the provided database params
+ * @param {boolean} options.useTypeScript - If set to true, generates the testApp in TypeScript, otherwise generate it in JavaScript
  */
-const generateTestApp = async ({ appName, database }) => {
+const generateTestApp = async ({ appName, useTypeScript, database }) => {
   const scope = {
     database,
     rootPath: path.resolve(appName),
@@ -50,6 +51,7 @@ const generateTestApp = async ({ appName, database }) => {
       '@strapi/plugin-i18n',
     ],
     additionalsDependencies: {},
+    useTypeScript,
   };
 
   await generateNew(scope);

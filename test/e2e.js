@@ -52,10 +52,10 @@ const runAllTests = async args => {
   });
 };
 
-const main = async (database, args) => {
+const main = async ({ database, useTypeScript }, args) => {
   try {
     await cleanTestApp(appName);
-    await generateTestApp({ appName, database });
+    await generateTestApp({ appName, database, useTypeScript });
 
     await runAllTests(args).catch(() => {
       process.stdout.write('Tests failed\n', () => {
@@ -77,17 +77,23 @@ yargs
     '$0',
     'run end to end tests',
     yargs => {
-      yargs.option('database', {
-        alias: 'db',
-        describe: 'choose a database',
-        choices: Object.keys(databases),
-        default: 'sqlite',
-      });
+      yargs
+        .option('database', {
+          alias: 'db',
+          describe: 'choose a database',
+          choices: Object.keys(databases),
+          default: 'sqlite',
+        })
+        .option('typescript', {
+          alias: 'ts',
+          boolean: true,
+          default: false,
+        });
     },
     argv => {
-      const { database, _: args } = argv;
+      const { database, typescript: useTypeScript, _: args } = argv;
 
-      main(databases[database], args);
+      main({ database: databases[database], useTypeScript }, args);
     }
   )
   .help().argv;

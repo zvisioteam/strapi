@@ -3,6 +3,8 @@
 const path = require('path');
 const _ = require('lodash');
 const dotenv = require('dotenv');
+const execa = require('execa');
+const { isTypeScriptProject } = require('../../packages/utils/typescript');
 const strapi = require('../../packages/core/strapi/lib');
 const { createUtils } = require('./utils');
 
@@ -22,12 +24,17 @@ const createStrapiInstance = async ({
   logLevel = 'fatal',
   bypassAuth = true,
 } = {}) => {
-  // read .env file as it could have been updated
+  const appDir = TEST_APP_URL;
+
+  // Read the .env file as it could have been updated
   dotenv.config({ path: process.env.ENV_PATH });
-  const options = {
-    appDir: TEST_APP_URL,
-    distDir: TEST_APP_URL,
-  };
+
+  const isTSProject = await isTypeScriptProject(appDir);
+  const distDir = isTSProject ? appDir : path.resolve(appDir, 'dist');
+
+  await execa('yarn', ['build']);
+
+  const options = { appDir, distDir };
   const instance = strapi(options);
 
   if (bypassAuth) {
@@ -53,6 +60,8 @@ const createStrapiInstance = async ({
   if (ensureSuperAdmin) {
     await utils.createUserIfNotExists(superAdminCredentials);
   }
+
+  console.log(instance.dirs);
 
   return instance;
 };

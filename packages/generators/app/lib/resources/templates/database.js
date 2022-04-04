@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
-module.exports = ({ connection, client, useTypescript }) => {
-  const language = useTypescript ? 'ts' : 'js';
+module.exports = ({ connection, client, useTypeScript }) => {
+  const language = useTypeScript ? 'ts' : 'js';
   const tmpl = fs.readFileSync(
     path.join(__dirname, language, 'database-templates', `${client}.template`)
   );

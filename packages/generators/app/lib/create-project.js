@@ -22,10 +22,10 @@ module.exports = async function createProject(scope, { client, connection, depen
   console.log(`Creating a new Strapi application at ${chalk.green(scope.rootPath)}.`);
   console.log('Creating files.');
 
-  const { rootPath, useTypescript } = scope;
+  const { rootPath, useTypeScript } = scope;
   const resources = join(__dirname, 'resources');
 
-  const language = useTypescript ? 'ts' : 'js';
+  const language = useTypeScript ? 'ts' : 'js';
 
   try {
     // copy files
@@ -53,7 +53,7 @@ module.exports = async function createProject(scope, { client, connection, depen
     // For now we only support javascript and typescript, so if we're not using
     // typescript, then we can assume we're using javascript. We'll need to change
     // this behavior when we'll abstract the supported languages even more.
-    if (!useTypescript) {
+    if (!useTypeScript) {
       copyDotFilesFromSubDirectory('js');
     }
 
@@ -79,7 +79,7 @@ module.exports = async function createProject(scope, { client, connection, depen
 
     await trackUsage({ event: 'didWritePackageJSON', scope });
 
-    if (useTypescript) {
+    if (useTypeScript) {
       const tsJSONDir = join(__dirname, 'resources', 'json', 'ts');
       const files = ['tsconfig-admin.json.js', 'tsconfig-server.json.js'];
 
@@ -102,14 +102,14 @@ module.exports = async function createProject(scope, { client, connection, depen
       createDatabaseConfig({
         client,
         connection,
-        useTypescript,
+        useTypeScript,
       })
     );
 
     // create config/server.js
     await fse.writeFile(
       join(rootPath, `config/admin.${language}`),
-      createAdminConfig({ useTypescript })
+      createAdminConfig({ useTypeScript })
     );
     await trackUsage({ event: 'didCopyConfigurationFiles', scope });
 
