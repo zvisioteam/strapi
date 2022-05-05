@@ -27,6 +27,7 @@ import useFormModalNavigation from '../../hooks/useFormModalNavigation';
 import AllowedTypesSelect from '../AllowedTypesSelect';
 import AttributeOptions from '../AttributeOptions';
 import DatePicker from '../DatePicker';
+import EnumDefaultValueSelect from '../EnumDefaultValueSelect';
 import DraftAndPublishToggle from '../DraftAndPublishToggle';
 import FormModalHeader from '../FormModalHeader';
 import FormModalEndActions from '../FormModalEndActions';
@@ -839,6 +840,7 @@ const FormModal = () => {
       'select-category': SelectCategory,
       'select-component': SelectComponent,
       'select-components': SelectComponents,
+      'select-default-enum': EnumDefaultValueSelect,
       'select-default-boolean': BooleanDefaultValueSelect,
       'select-number': SelectNumber,
       'select-date': SelectDateType,

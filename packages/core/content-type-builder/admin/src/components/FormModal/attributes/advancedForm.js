@@ -154,7 +154,7 @@ const advancedForm = {
           items: [
             {
               name: 'default',
-              type: 'select',
+              type: 'select-default-enum',
               intlLabel: {
                 id: getTrad('form.attribute.settings.default'),
                 defaultMessage: 'Default value',
