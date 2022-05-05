@@ -29,6 +29,7 @@ import AttributeOptions from '../AttributeOptions';
 import DatePicker from '../DatePicker';
 import DefaultNumber from '../DefaultNumber';
 import DefaultUid from '../DefaultUid';
+import TargetFieldUid from '../TargetFieldUid';
 import DraftAndPublishToggle from '../DraftAndPublishToggle';
 import FormModalHeader from '../FormModalHeader';
 import FormModalEndActions from '../FormModalEndActions';
@@ -838,6 +839,7 @@ const FormModal = () => {
       'date-picker': DatePicker,
       'default-number': DefaultNumber,
       'default-uid': DefaultUid,
+      'target-field-uid': TargetFieldUid,
       'radio-group': CustomRadioGroup,
       relation: Relation,
       'select-category': SelectCategory,

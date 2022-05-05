@@ -395,17 +395,7 @@ const baseForm = {
       ],
     };
   },
-  uid: (data, step, attributes) => {
-    const options = attributes
-      .filter(({ type }) => ['string', 'text'].includes(type))
-      .map(({ name }) => ({
-        key: name,
-        value: name,
-        metadatas: {
-          intlLabel: { id: `${name}.no-override`, defaultMessage: name },
-        },
-      }));
-
+  uid: () => {
     return {
       sections: [
         {
@@ -424,15 +414,7 @@ const baseForm = {
                 defaultMessage: 'Attached field',
               },
               name: 'targetField',
-              type: 'select',
-              options: [
-                {
-                  key: '__null_reset_value__',
-                  value: '',
-                  metadatas: { intlLabel: { id: 'global.none', defaultMessage: 'None' } },
-                },
-                ...options,
-              ],
+              type: 'target-field-uid',
             },
           ],
         },
