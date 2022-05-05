@@ -82,7 +82,7 @@ const advancedForm = {
       ],
     };
   },
-  date: ({ type }) => {
+  date: () => {
     return {
       sections: [
         {
@@ -90,11 +90,7 @@ const advancedForm = {
           items: [
             {
               ...options.default,
-              type: type || 'date',
-              value: null,
-              withDefaultValue: false,
-              disabled: !type,
-              autoFocus: false,
+              type: 'date-picker',
             },
           ],
         },

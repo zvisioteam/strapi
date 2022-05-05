@@ -24,13 +24,12 @@ import { Stack } from '@strapi/design-system/Stack';
 import pluginId from '../../pluginId';
 import useDataManager from '../../hooks/useDataManager';
 import useFormModalNavigation from '../../hooks/useFormModalNavigation';
-// New compos
 import AllowedTypesSelect from '../AllowedTypesSelect';
 import AttributeOptions from '../AttributeOptions';
+import DatePicker from '../DatePicker';
 import DraftAndPublishToggle from '../DraftAndPublishToggle';
 import FormModalHeader from '../FormModalHeader';
 import FormModalEndActions from '../FormModalEndActions';
-
 import BooleanDefaultValueSelect from '../BooleanDefaultValueSelect';
 import BooleanRadioGroup from '../BooleanRadioGroup';
 import CheckboxWithNumberField from '../CheckboxWithNumberField';
@@ -834,6 +833,7 @@ const FormModal = () => {
       'checkbox-with-number-field': CheckboxWithNumberField,
       'component-icon-picker': ComponentIconPicker,
       'content-type-radio-group': ContentTypeRadioGroup,
+      'date-picker': DatePicker,
       'radio-group': CustomRadioGroup,
       relation: Relation,
       'select-category': SelectCategory,
