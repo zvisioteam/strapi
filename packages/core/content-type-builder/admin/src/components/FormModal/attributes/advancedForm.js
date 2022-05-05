@@ -146,7 +146,7 @@ const advancedForm = {
       ],
     };
   },
-  enumeration: data => {
+  enumeration: () => {
     return {
       sections: [
         {
@@ -159,30 +159,6 @@ const advancedForm = {
                 id: getTrad('form.attribute.settings.default'),
                 defaultMessage: 'Default value',
               },
-              validations: {},
-              options: [
-                {
-                  key: '__null_reset_value__',
-                  value: '',
-                  metadatas: {
-                    intlLabel: {
-                      id: 'components.InputSelect.option.placeholder',
-                      defaultMessage: 'Choose here',
-                    },
-                  },
-                },
-                ...(data.enum || [])
-                  .filter((value, index) => data.enum.indexOf(value) === index && value)
-                  .map(value => {
-                    return {
-                      key: value,
-                      value,
-                      metadatas: {
-                        intlLabel: { id: `${value}.no-override`, defaultMessage: value },
-                      },
-                    };
-                  }),
-              ],
             },
             {
               intlLabel: {
