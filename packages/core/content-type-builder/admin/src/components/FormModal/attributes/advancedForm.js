@@ -341,12 +341,12 @@ const advancedForm = {
       ],
     };
   },
-  uid: (data) => {
+  uid: () => {
     return {
       sections: [
         {
           sectionTitle: null,
-          items: [{ ...options.default, disabled: Boolean(data.targetField), type: 'text' }],
+          items: [{ ...options.default, type: 'default-uid' }],
         },
 
         {

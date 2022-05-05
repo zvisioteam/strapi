@@ -28,6 +28,7 @@ import AllowedTypesSelect from '../AllowedTypesSelect';
 import AttributeOptions from '../AttributeOptions';
 import DatePicker from '../DatePicker';
 import DefaultNumber from '../DefaultNumber';
+import DefaultUid from '../DefaultUid';
 import DraftAndPublishToggle from '../DraftAndPublishToggle';
 import FormModalHeader from '../FormModalHeader';
 import FormModalEndActions from '../FormModalEndActions';
@@ -836,6 +837,7 @@ const FormModal = () => {
       'content-type-radio-group': ContentTypeRadioGroup,
       'date-picker': DatePicker,
       'default-number': DefaultNumber,
+      'default-uid': DefaultUid,
       'radio-group': CustomRadioGroup,
       relation: Relation,
       'select-category': SelectCategory,
