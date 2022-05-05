@@ -146,7 +146,7 @@ const advancedForm = {
       ],
     };
   },
-  enumeration: data => {
+  enumeration: (data) => {
     return {
       sections: [
         {
@@ -173,7 +173,7 @@ const advancedForm = {
                 },
                 ...(data.enum || [])
                   .filter((value, index) => data.enum.indexOf(value) === index && value)
-                  .map(value => {
+                  .map((value) => {
                     return {
                       key: value,
                       value,
@@ -252,24 +252,19 @@ const advancedForm = {
       ],
     };
   },
-  number: data => {
-    const inputStep = data.type === 'decimal' || data.type === 'float' ? 'any' : 1;
-
+  number: () => {
     return {
       sections: [
         {
           sectionTitle: null,
           items: [
             {
-              autoFocus: true,
               name: 'default',
-              type: data.type === 'biginteger' ? 'text' : 'number',
-              step: inputStep,
+              type: 'default-number',
               intlLabel: {
                 id: getTrad('form.attribute.settings.default'),
                 defaultMessage: 'Default value',
               },
-              validations: {},
             },
           ],
         },
@@ -346,7 +341,7 @@ const advancedForm = {
       ],
     };
   },
-  uid: data => {
+  uid: (data) => {
     return {
       sections: [
         {

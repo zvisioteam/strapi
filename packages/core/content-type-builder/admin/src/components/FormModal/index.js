@@ -27,6 +27,7 @@ import useFormModalNavigation from '../../hooks/useFormModalNavigation';
 import AllowedTypesSelect from '../AllowedTypesSelect';
 import AttributeOptions from '../AttributeOptions';
 import DatePicker from '../DatePicker';
+import DefaultNumber from '../DefaultNumber';
 import DraftAndPublishToggle from '../DraftAndPublishToggle';
 import FormModalHeader from '../FormModalHeader';
 import FormModalEndActions from '../FormModalEndActions';
@@ -97,7 +98,7 @@ const FormModal = () => {
   const formModalSelector = useMemo(makeSelectFormModal, []);
   const dispatch = useDispatch();
   const toggleNotification = useNotification();
-  const reducerState = useSelector(state => formModalSelector(state), shallowEqual);
+  const reducerState = useSelector((state) => formModalSelector(state), shallowEqual);
   const { push } = useHistory();
   const { trackUsage } = useTracking();
   const { formatMessage } = useIntl();
@@ -755,7 +756,7 @@ const FormModal = () => {
     });
   };
 
-  const sendAdvancedTabEvent = tab => {
+  const sendAdvancedTabEvent = (tab) => {
     if (tab !== 'advanced') {
       return;
     }
@@ -771,7 +772,7 @@ const FormModal = () => {
     }
   };
 
-  const sendButtonAddMoreFieldEvent = shouldContinue => {
+  const sendButtonAddMoreFieldEvent = (shouldContinue) => {
     if (
       modalType === 'attribute' &&
       forTarget === 'contentType' &&
@@ -834,6 +835,7 @@ const FormModal = () => {
       'component-icon-picker': ComponentIconPicker,
       'content-type-radio-group': ContentTypeRadioGroup,
       'date-picker': DatePicker,
+      'default-number': DefaultNumber,
       'radio-group': CustomRadioGroup,
       relation: Relation,
       'select-category': SelectCategory,
@@ -884,10 +886,10 @@ const FormModal = () => {
 
   const baseFormInputNames = getFormInputNames(baseForm);
   const advancedFormInputNames = getFormInputNames(advancedForm);
-  const doesBaseFormHasError = Object.keys(formErrors).some(key =>
+  const doesBaseFormHasError = Object.keys(formErrors).some((key) =>
     baseFormInputNames.includes(key)
   );
-  const doesAdvancedFormHasError = Object.keys(formErrors).some(key =>
+  const doesAdvancedFormHasError = Object.keys(formErrors).some((key) =>
     advancedFormInputNames.includes(key)
   );
 
@@ -922,7 +924,7 @@ const FormModal = () => {
                 id="tabs"
                 variant="simple"
                 ref={tabGroupRef}
-                onTabChange={selectedTab => {
+                onTabChange={(selectedTab) => {
                   if (selectedTab === 1) {
                     sendAdvancedTabEvent('advanced');
                   }
