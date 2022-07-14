@@ -5,6 +5,7 @@
 const knex = require('knex');
 
 const SqliteClient = require('knex/lib/dialects/sqlite3/index');
+const MysqlClient = require('knex/lib/dialects/mysql/index');
 
 const tryPackage = packageName => {
   try {
@@ -17,9 +18,16 @@ const tryPackage = packageName => {
     throw error;
   }
 };
+
 class LegacySqliteClient extends SqliteClient {
   _driver() {
     return require('sqlite3');
+  }
+}
+
+class LegacyMysqlClient extends MysqlClient {
+  _driver() {
+    return require('mysql');
   }
 }
 
@@ -27,6 +35,8 @@ const clientMap = {
   'better-sqlite3': 'better-sqlite3',
   '@vscode/sqlite3': 'sqlite',
   sqlite3: LegacySqliteClient,
+  mysql2: 'mysql2',
+  mysql: LegacyMysqlClient,
 };
 
 const getSqlitePackageName = () => {
@@ -54,7 +64,9 @@ const createConnection = config => {
   }
 
   if (knexConfig.client === 'mysql') {
-    knexConfig.client = getMysqlPackageName();
+    const mysqlPackageName = getMysqlPackageName();
+
+    knexConfig.client = clientMap[mysqlPackageName];
   }
 
   const knexInstance = knex(knexConfig);
