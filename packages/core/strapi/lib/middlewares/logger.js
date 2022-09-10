@@ -1,7 +1,6 @@
 'use strict';
 
 /* eslint-disable no-nested-ternary */
-
 const chalk = require('chalk');
 
 const codeToColor = (code) => {

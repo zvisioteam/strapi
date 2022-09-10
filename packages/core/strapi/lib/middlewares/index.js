@@ -14,6 +14,7 @@ const responses = require('./responses');
 const security = require('./security');
 const session = require('./session');
 const publicStatic = require('./public');
+const requestId = require('./request-id');
 
 module.exports = {
   errors,
@@ -30,4 +31,5 @@ module.exports = {
   query,
   favicon,
   public: publicStatic,
+  requestId,
 };

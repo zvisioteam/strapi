@@ -11,6 +11,7 @@ const { resolveMiddlewares } = require('./middleware');
  */
 
 const defaultConfig = [
+  'strapi::requestId',
   'strapi::errors',
   'strapi::security',
   'strapi::cors',
@@ -24,6 +25,7 @@ const defaultConfig = [
 ];
 
 const requiredMiddlewares = [
+  'strapi::requestId',
   'strapi::errors',
   'strapi::security',
   'strapi::cors',
