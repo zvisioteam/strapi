@@ -190,10 +190,18 @@ program
   )
   .addOption(
     new Option(
-      '--schemaComparison <schemaComparison>',
-      'exact requires every field to match, strict requires Strapi version and schemas to match, subset requires source schema to exist in destination, bypass skips checks'
+      '--integrityCheck <strategy>',
+      'strict requires source and destination schemas to match, subset requires source schema to exist in destination, skip disables integrity check'
     )
-      .choices(['exact', 'strict', 'subset', 'bypass'])
+      .choices(['strict', 'subset', 'skip'])
+      .default('strict')
+  )
+  .addOption(
+    new Option(
+      '--versionMatch <strategy>',
+      'strict requires source and destination schemas to match, subset requires source schema to exist in destination, skip disables integrity check'
+    )
+      .choices(['exact', 'ignore', 'major', 'minor', 'patch'])
       .default('exact')
   )
   .addOption(
