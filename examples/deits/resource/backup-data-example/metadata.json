@@ -1,0 +1,21 @@
+{
+  "strapi": {
+    "version": "4.4.1",
+    "plugins": {
+      "users-permissions": "4.4.1",
+      "i18n": "4.4.1"
+    }
+  },
+
+  "data": {
+    "entities": {
+      "count": 10,
+      "size": 1160
+    },
+
+    "links": {
+      "count": 3,
+      "size": 293
+    }
+  }
+}

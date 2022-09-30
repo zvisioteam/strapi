@@ -13,7 +13,11 @@ interface IProvider {
 }
 
 export interface ISourceProvider extends IProvider {
-  transfer;
+  // Getters for the source's transfer streams
+  streamEntities?(): StreamItem;
+  streamLinks?(): StreamItem;
+  streamMedia?(): StreamItem;
+  streamConfiguration?(): StreamItem;
 }
 
 export interface IDestinationProvider extends IProvider {
