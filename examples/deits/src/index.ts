@@ -8,7 +8,7 @@ const trySourceFileProvider = async () => {
     console.log('Testing the source file provider');
 
     console.log('Creating the file provider instance...');
-    const fileProvider = new LocalFileSourceProvider({ backupFilePath: 'out/ackup.tar.gz' });
+    const fileProvider = new LocalFileSourceProvider({ backupFilePath: 'out/backup.tar.gz' });
     console.log('Done ✔️');
 
     console.log('Bootstrap step...');
