@@ -5,6 +5,9 @@
   "main": "index.js",
   "license": "MIT",
   "types": "./types/index.d.ts",
+  "scripts": {
+    "fake:backup": "./scripts/archive.sh"
+  },
   "dependencies": {
     "stream-chain": "^2.2.5",
     "stream-json": "^1.7.4",

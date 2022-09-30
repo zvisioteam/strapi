@@ -1,0 +1,5 @@
+{"type":"api::author.author","id":1,"data":{"name":"Bob","age":10}}
+{"type":"api::author.author","id":2,"data":{"name":"Alice"}}
+{"type":"api::article.article","id":1,"data":{"title":"My article","metadata":{"link":"http://link.com","createdAt":"2022-07-10"}}}
+{"type":"api::article.article","id":2,"data":{"title":"My second article","metadata":{"link":"http://kinl.com","createdAt":"2022-12-03"}}}
+{"type":"api::article.article","id":3,"data":{"title":"The best article","metadata":{"link":"http://nikl.com","createdAt":"2022-02-08"}}}
