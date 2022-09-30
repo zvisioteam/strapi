@@ -80,9 +80,6 @@ export interface ITransferEngine {
  * written for the CLI with those options at one point
  *
  * Note: here, we're listing the TransferEngine options, not the individual providers' options
- *
- * References
- * - https://www.notion.so/strapi/CLI-66514b5111d3478fab5e2d1d02b4291f
  */
 interface ITransferEngineOptions {
   /**
