@@ -1,5 +1,0 @@
-{"type":"api::author.author","id":3,"data":{"name":"Kay","age":39}}
-{"type":"api::article.article","id":4,"data":{"title":"Another article","metadata":{"link":"http://a-link.com","createdAt":"2021-12-10"}}}
-{"type":"api::article.article","id":5,"data":{"title":"Such woaw","metadata":{"link":"http://link-b.com","createdAt":"1990-12-11"}}}
-{"type":"api::article.article","id":6,"data":{"title":"Very nice read","metadata":{"link":"http://li-c-nk-.com","createdAt":"2008-04-10"}}}
-{"type":"api::article.article","id":7,"data":{"title":"Dunno what to say anymore","metadata":{"link":"http://d.com","createdAt":"2022-09-01"}}}

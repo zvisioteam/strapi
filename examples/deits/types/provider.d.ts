@@ -1,5 +1,5 @@
+import { Stream } from './utils';
 import { IMetadata } from './common-entities';
-import { StreamItem } from './utils';
 
 type ProviderType = 'source' | 'destination';
 
@@ -14,21 +14,21 @@ interface IProvider {
 
 export interface ISourceProvider extends IProvider {
   // Getters for the source's transfer streams
-  streamEntities?(): StreamItem;
-  streamLinks?(): StreamItem;
-  streamMedia?(): StreamItem;
-  streamConfiguration?(): StreamItem;
+  streamEntities?(): Stream;
+  streamLinks?(): Stream;
+  streamMedia?(): Stream;
+  streamConfiguration?(): Stream;
 }
 
 export interface IDestinationProvider extends IProvider {
   /**
    * Optional rollback implementation
    */
-  rollback?(): void | Promise<void>;
+  rollback?<T extends Error = Error>(e: T): void | Promise<void>;
 
   // Getters for the destination's transfer streams
-  getEntitiesStream?(): StreamItem;
-  getLinksStream?(): StreamItem;
-  getMediaStream?(): StreamItem;
-  getConfigurationStream?(): StreamItem;
+  getEntitiesStream?(): Stream;
+  getLinksStream?(): Stream;
+  getMediaStream?(): Stream;
+  getConfigurationStream?(): Stream;
 }

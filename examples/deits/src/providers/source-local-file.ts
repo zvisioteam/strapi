@@ -1,10 +1,13 @@
 import fs from 'fs';
 import Chain, { chain } from 'stream-chain';
+import { PassThrough, pipeline, Writable } from 'stream';
+import { parser } from 'stream-json/jsonl/Parser';
+import { stringer } from 'stream-json/jsonl/Stringer';
 import { createGunzip } from 'zlib';
 import tar from 'tar';
 
-import { IMetadata, ISourceProvider, ProviderType, StreamItem } from '../../types';
-import { pipeline } from 'stream';
+import type { IMetadata, ISourceProvider, ProviderType, Stream, StreamItem } from '../../types';
+import { parseJSONFile } from '../utils';
 
 const METADATA_FILE_PATH = 'metadata.json';
 
@@ -26,55 +29,16 @@ export class LocalFileSourceProvider implements ISourceProvider {
   }
 
   private getFileStream(path: string, decompress: boolean = true): Chain {
-    const streams: StreamItem[] = [fs.createReadStream(path)];
+    const readStream = fs.createReadStream(path);
+    const streams: StreamItem[] = [readStream];
 
     if (decompress) {
-      streams.push(createGunzip());
+      const gz = createGunzip();
+
+      streams.push(gz);
     }
 
     return chain(streams);
-  }
-
-  private async parseJSONFile<T extends {} = unknown>(filepath: string) {
-    const backupPath = this.options.backupFilePath;
-
-    return new Promise<T>((resolve, reject) => {
-      pipeline(
-        [
-          this.getFileStream(backupPath),
-          // Custom backup archive parsing
-          new tar.Parse({
-            /**
-             * Filter the parsed entries to only keep the one that matches the given filepath
-             */
-            filter(path, entry) {
-              return path === filepath && entry.type === 'File';
-            },
-
-            /**
-             * Whenever an entry passes the filter method, process it
-             */
-            async onentry(entry) {
-              // Collect all the content of the entry file
-              const content = await entry.collect();
-              // Parse from buffer to string to JSON
-              const parsedContent = JSON.parse(content.toString());
-
-              // Resolve the Promise with the parsed content
-              resolve(parsedContent);
-
-              // Cleanup (close the stream associated to the entry)
-              entry.destroy();
-            },
-          }),
-        ],
-        () => {
-          // If the promise hasn't been resolved and we've parsed all
-          // the archive entries, then the file doesn't exist
-          reject(`${filepath} not found in ${backupPath}`);
-        }
-      );
-    });
   }
 
   bootstrap() {
@@ -90,6 +54,60 @@ export class LocalFileSourceProvider implements ISourceProvider {
   }
 
   async getMetadata() {
-    return this.parseJSONFile<IMetadata>(METADATA_FILE_PATH);
+    const archiveStream = this.getFileStream(this.options.backupFilePath);
+
+    return parseJSONFile<IMetadata>(archiveStream, METADATA_FILE_PATH);
+  }
+
+  streamEntities() {
+    const inStream = this.getFileStream(this.options.backupFilePath);
+
+    // Temporary solution in order to use an empty chain (passthrough) as an outstream
+    const outStream = chain([(data) => data]);
+
+    pipeline(
+      [
+        inStream,
+        new tar.Parse({
+          filter(path, entry) {
+            if (entry.type !== 'File') {
+              return false;
+            }
+
+            const parts = path.split('/');
+
+            if (parts.length !== 2) {
+              return false;
+            }
+
+            const [directory] = parts;
+
+            return directory === 'entities';
+          },
+
+          onentry(entry) {
+            const entitiesTransforms = [
+              // Parse the chunks into entities (json lines)
+              parser(),
+            ];
+
+            entry
+              // Pipe transforms
+              .pipe(chain(entitiesTransforms))
+              // Pipe the out stream to the whole pipeline
+              // DO NOT send the 'end' event when this entry has finished
+              // emitting data, so that it doesn't close the out stream
+              .pipe(outStream, { end: false });
+          },
+        }),
+      ],
+      async () => {
+        // Manually send the end event to the out stream
+        // once every entry has finished streaming its content
+        outStream.end();
+      }
+    );
+
+    return outStream;
   }
 }

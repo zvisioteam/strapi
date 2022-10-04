@@ -116,7 +116,7 @@ interface ITransferEngineOptions {
   /**
    * Options related to the transfer of the links
    */
-  links: {
+  links?: {
     /**
      * Transformation rules for links
      */
