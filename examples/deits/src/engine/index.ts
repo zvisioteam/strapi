@@ -1,4 +1,5 @@
 import { pipeline } from 'stream';
+import { chain } from 'stream-chain';
 import {
   IDestinationProvider,
   ISourceProvider,
@@ -126,17 +127,18 @@ export class TransferEngine implements ITransferEngine {
     const outStream = this.destinationProvider.getEntitiesStream();
 
     return new Promise((resolve) => {
-      pipeline(
+      chain(
         // We might want to use a json-chain's Chain here since they allow transforms
         // streams as regular functions (that allows object as parameter & return type)
-        [inStream, outStream],
+        [inStream, outStream]
         // Once everything have been transferred & the streams
         // have been closed, resolve the promise gracefully
-        () => {
+      )
+        // Once everything has been transferred
+        .on('end', () => {
           console.log('All the entities have been transferred');
           resolve();
-        }
-      );
+        });
     });
   }
 
