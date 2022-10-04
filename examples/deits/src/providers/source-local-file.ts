@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { get } from 'lodash/fp';
 import Chain, { chain } from 'stream-chain';
 import { PassThrough, pipeline, Writable } from 'stream';
 import { parser } from 'stream-json/jsonl/Parser';
@@ -89,6 +90,8 @@ export class LocalFileSourceProvider implements ISourceProvider {
             const entitiesTransforms = [
               // Parse the chunks into entities (json lines)
               parser(),
+              // Only keep the value property (ignore the key)
+              get('value'),
             ];
 
             entry
