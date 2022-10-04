@@ -79,10 +79,10 @@ if (require.main === 'module') {
 JSONL File Generator
     
 Help
-    --file={string} Output filepath
-    --size={number} Number of line to generate
-    --maxSize={number} Maximum amount of data that will be generated (in bytes)
-    --templat={string} Represents a stringified JSON template used to generate each line. Use %id% in your string to automatically replace it with the current id  
+    --file={string} Output filepath, default to './out.jsonl'
+    --size={number} Number of line to generate, default to 10000
+    --maxSize={number} Maximum amount of data that will be generated (in bytes), optional, no default
+    --template={string} Represents a stringified JSON template used to generate each line. Use %id% in your string to automatically replace it with the current id  
     `);
     return;
   }
