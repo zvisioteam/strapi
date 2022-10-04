@@ -1,4 +1,3 @@
-import { pipeline } from 'stream';
 import { chain } from 'stream-chain';
 import {
   IDestinationProvider,
