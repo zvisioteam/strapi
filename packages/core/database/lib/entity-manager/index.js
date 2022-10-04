@@ -125,6 +125,10 @@ const createEntityManager = (db) => {
   const repoMap = {};
 
   return {
+    stream(uid, params) {
+      return this.createQueryBuilder(uid).init(params).stream();
+    },
+
     async findOne(uid, params) {
       const states = await db.lifecycles.run('beforeFindOne', uid, { params });
 

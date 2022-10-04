@@ -409,6 +409,10 @@ const createQueryBuilder = (uid, db) => {
         db.dialect.transformErrors(error);
       }
     },
+
+    async stream() {
+      return this.getKnexQuery().stream();
+    },
   };
 };
 

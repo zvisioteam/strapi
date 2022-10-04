@@ -12,6 +12,10 @@ const withDefaultPagination = (params) => {
 
 const createRepository = (uid, db) => {
   return {
+    stream(params) {
+      return db.entityManager.stream(uid, params);
+    },
+
     findOne(params) {
       return db.entityManager.findOne(uid, params);
     },

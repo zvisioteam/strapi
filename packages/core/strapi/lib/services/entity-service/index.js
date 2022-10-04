@@ -281,6 +281,14 @@ const createDefaultImplementation = ({ strapi, db, eventHub, entityValidator }) 
 
     return db.query(uid).load(entity, field, loadParams);
   },
+
+  async stream(uid, opts) {
+    const wrappedParams = await this.wrapParams(opts, { uid });
+
+    const query = transformParamsToQuery(uid, wrappedParams);
+
+    return db.query(uid).stream(query);
+  },
 });
 
 module.exports = (ctx) => {
