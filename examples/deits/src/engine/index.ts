@@ -94,6 +94,8 @@ export class TransferEngine implements ITransferEngine {
 
   async transfer(): Promise<void> {
     try {
+      await this.boostrap();
+
       const isValidTransfer = await this.integrityCheck();
 
       if (!isValidTransfer) {
@@ -101,8 +103,6 @@ export class TransferEngine implements ITransferEngine {
           `Unable to transfer the data between ${this.sourceProvider.name} and ${this.destinationProvider.name}.\nPlease refer to the log above for more information.`
         );
       }
-
-      await this.boostrap();
 
       await this.transferEntities();
       // await this.transferLinks();
