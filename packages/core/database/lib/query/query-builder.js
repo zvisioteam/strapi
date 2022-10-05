@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash/fp');
+const { Transform } = require('stream');
 
 const helpers = require('./helpers');
 
@@ -411,7 +412,34 @@ const createQueryBuilder = (uid, db) => {
     },
 
     async stream() {
-      return this.getKnexQuery().stream();
+      // Create a stream from our query
+      // It'll return the results row after row
+      const stream = this.getKnexQuery().stream();
+
+      // Get a reference on the current query builder instance
+      const qb = this;
+
+      // Create a transform stream to apply the populate
+      // and the rows mapping (to Strapi format)
+      const transformStream = new Transform({
+        // Allow Reading & Writing object
+        objectMode: true,
+        // Transform callback
+        async transform(row, encoding, callback) {
+          // Apply the populate if needed
+          if (state.populate) {
+            await helpers.applyPopulate([row], state.populate, { qb, uid, db });
+          }
+
+          // Map the result to the Strapi format
+          const result = helpers.fromRow(meta, row);
+
+          // Return the result to the next stream
+          callback(null, result);
+        },
+      });
+
+      return stream.pipe(transformStream);
     },
   };
 };

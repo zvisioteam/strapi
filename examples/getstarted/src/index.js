@@ -22,12 +22,18 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }) {
+    // Resolve the components & dynamic zones attributes so that we can populate them
+    const { attributes } = strapi.contentTypes['api::address.address'];
+    const fieldsToPopulate = Object.keys(attributes).filter((key) =>
+      ['component', 'dynamiczone'].includes(attributes[key].type)
+    );
+
     chain([
       // streaming all the countries
-      await strapi.entityService.stream('api::country.country'),
+      await strapi.entityService.stream('api::address.address', { populate: fieldsToPopulate }),
       // transform stream to log & transform
       (data) => {
-        console.log('Backing up', JSON.stringify(data));
+        console.log('Backing up', data);
 
         const { id, ...entity } = data;
 
@@ -40,7 +46,9 @@ module.exports = {
       // this would be bound to the destination provider stream (using the engine) instead of a file like this one
       stringer(),
       fs.createWriteStream('../out.jsonl'),
-    ]);
+    ]).on('end', () => {
+      process.exit();
+    });
   },
 
   /**
