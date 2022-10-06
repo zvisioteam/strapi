@@ -411,7 +411,7 @@ const createQueryBuilder = (uid, db) => {
       }
     },
 
-    async stream() {
+    async stream({ mapResults = true } = {}) {
       // Create a stream from our query
       // It'll return the results row after row
       const stream = this.getKnexQuery().stream();
@@ -425,14 +425,18 @@ const createQueryBuilder = (uid, db) => {
         // Allow Reading & Writing object
         objectMode: true,
         // Transform callback
-        async transform(row, encoding, callback) {
+        async transform(row, _encoding, callback) {
           // Apply the populate if needed
           if (state.populate) {
             await helpers.applyPopulate([row], state.populate, { qb, uid, db });
           }
 
-          // Map the result to the Strapi format
-          const result = helpers.fromRow(meta, row);
+          let result = row;
+
+          if (mapResults) {
+            // Map the result to the Strapi format if enabled
+            result = helpers.fromRow(meta, result);
+          }
 
           // Return the result to the next stream
           callback(null, result);
