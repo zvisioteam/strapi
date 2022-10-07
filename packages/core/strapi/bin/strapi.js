@@ -106,6 +106,7 @@ program
 const listOption = (value) => {
   return value.split(',');
 };
+
 program
   .command('export')
   .description('Export data from Strapi to file')
@@ -113,8 +114,7 @@ program
   .option('--config <configFile>', 'Path to the config file')
   .option(
     '--output <outputFilename>',
-    'Filename to output (without extension)',
-    'strapi-{timestamp}.gz'
+    'Filename to output (without extension) [Default: "strapi-{timestamp}.gz"]'
   )
   .addOption(new Option('--sourceUrl', 'Remote url to use instead of local instance of Strapi'))
   .addOption(new Option('--sourceToken', 'Auth token for remote Strapi')) // required if sourceUrl is set
@@ -126,7 +126,7 @@ program
   .addOption(
     new Option(
       '--only <data,to,include>',
-      'Comma-separated list of data to include (webhooks,content,localmedia,providermedia,config)', // ['webhooks', 'content', 'localmedia', 'providermedia', 'relations']
+      'Comma-separated list of data to include (webhooks, content, localmedia, providermedia, config)', // ['webhooks', 'content', 'localmedia', 'providermedia', 'relations']
       listOption
     )
   )
@@ -146,7 +146,7 @@ program
   .addOption(
     new Option('--split <max MB per file>', 'split exported file when exceeding max filesize in MB')
   )
-  .action(require('../lib/commands/transfer'));
+  .action(require('../lib/commands/transfer/export'));
 
 // `$ strapi import`
 program
@@ -166,12 +166,7 @@ program
   )
   .addOption(
     new Option('--conflictStrategy <conflictStrategy>', 'Which strategy to use for ID conflicts')
-      // newest: use whichever has the latest updatedAt
-      // replace: use imported record
-      // keep: leave existing record
-      // bail: abort the transfer but keep successful records
-      // rollback: rollback to before import
-      .choices(['newest', 'replace', 'keep', 'bail', 'rollback'])
+      .choices(['newest', 'overwrite', 'abort', 'ignore'])
       .default('newest')
   )
   .addOption(
@@ -190,18 +185,10 @@ program
   )
   .addOption(
     new Option(
-      '--integrityCheck <strategy>',
-      'strict requires source and destination schemas to match, subset requires source schema to exist in destination, skip disables integrity check'
+      '--schemaComparison <schemaComparison>',
+      'exact requires every field to match, strict requires Strapi version and schemas to match, subset requires source schema to exist in destination, bypass skips checks'
     )
-      .choices(['strict', 'subset', 'skip'])
-      .default('strict')
-  )
-  .addOption(
-    new Option(
-      '--versionMatch <strategy>',
-      'strict requires source and destination schemas to match, subset requires source schema to exist in destination, skip disables integrity check'
-    )
-      .choices(['exact', 'ignore', 'major', 'minor', 'patch'])
+      .choices(['exact', 'strict', 'subset', 'bypass'])
       .default('exact')
   )
   .addOption(
@@ -231,7 +218,7 @@ program
     ) // .choices(crypto.getCiphers())
   )
 
-  .action(require('../lib/commands/transfer'));
+  .action(require('../lib/commands/transfer/import'));
 
 // `$ strapi start`
 program
