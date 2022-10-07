@@ -49,58 +49,90 @@ export class LocalFileDestinationProvider implements IDestinationProvider {
   }
 
   getEntitiesStream(): Stream {
-    const entitiesDir = 'entities';
-    const entitiesFileName = () => `entities_${k}.jsonl`;
-
-    const fullPath = () => path.join(this.options.backupFilePath, entitiesDir, entitiesFileName());
-
-    let size = 0;
-    let k = 0;
-    let writeStream = fs.createWriteStream(fullPath());
-
-    const s = new Writable({
-      objectMode: true,
-      write(chunk, encoding, callback) {
-        size += chunk.length;
-
-        if (size > 2200000) {
-          k += 1;
-          size = 0;
-          writeStream.end();
-          writeStream.destroy();
-          writeStream = fs.createWriteStream(fullPath());
-          console.log('new write stream created');
-        }
-
-        writeStream.write(chunk, encoding, callback);
-      },
-    });
-
     const shouldEncrypt = true;
+    const maxFileSize = 1000;
 
-    // let chunkSize = 0;
-    // let chunk = '';
+    const filePathFactory = (fileIndex: number = 0) => {
+      return path.join(
+        // Backup path
+        this.options.backupFilePath,
+        // "entities/" directory
+        'entities',
+        // "entities_00000.jsonl" file
+        `entities_${String(fileIndex).padStart(5, '0')}.jsonl`
+      );
+    };
 
     const streams: any[] = [
+      // jsonl strings
       stringer(),
-      // (data) => {
-      //   const strData = JSON.stringify(data) + '\n';
-      //   chunkSize += strData.length;
-      //   if (chunkSize > 1000000 || data === null) {
-      //     chunkSize = 0;
-      //     chunk = '';
-      //     callback(null, chunk);
-      //   }
-      // },
+      // compressed lines
+      zip.createGzip(),
     ];
 
     if (shouldEncrypt) {
-      const encryptionStream = encrypt('hello').cipher();
+      const encryptionStream = encrypt('secret_key').cipher();
+
+      // encrypted lines
       streams.push(encryptionStream);
     }
 
-    streams.push(s);
+    // write to files
+    streams.push(createMultiFilesWriteStream(filePathFactory, maxFileSize));
 
     return chain(streams);
   }
 }
+
+/**
+ * Create a writable stream that can split the streamed data into
+ * multiple files based on a provided maximum file size value.
+ */
+const createMultiFilesWriteStream = (
+  filePathFactory: (index?: number) => string,
+  maxFileSize?: number
+): Writable => {
+  let fileIndex = 0;
+  let fileSize = 0;
+  let maxSize = maxFileSize;
+
+  let writeStream: Writable;
+
+  const createIndexedWriteStream = () => fs.createWriteStream(filePathFactory(fileIndex));
+
+  // If no maximum file size is provided, then return a basic fs write stream
+  if (maxFileSize === undefined) {
+    return createIndexedWriteStream();
+  }
+
+  if (maxFileSize <= 0) {
+    throw new Error('Max file size must be a positive number');
+  }
+
+  return new Writable({
+    write(chunk, encoding, callback) {
+      // Initialize the write stream value if undefined
+      if (!writeStream) {
+        writeStream = createIndexedWriteStream();
+      }
+
+      // Check that by adding this new chunk of data, we
+      // are not going to reach the maximum file size.
+      if (fileSize + chunk.length > maxSize) {
+        // Update the counters' value
+        fileIndex++;
+        fileSize = 0;
+
+        // Replace old write stream
+        writeStream.destroy();
+        writeStream = createIndexedWriteStream();
+      }
+
+      // Update the actual file size
+      fileSize += chunk.length;
+
+      // Transfer the data to the up-to-date write stream
+      writeStream.write(chunk, encoding, callback);
+    },
+  });
+};
