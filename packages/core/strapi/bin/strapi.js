@@ -166,8 +166,8 @@ program
   )
   .addOption(
     new Option('--conflictStrategy <conflictStrategy>', 'Which strategy to use for ID conflicts')
-      .choices(['newest', 'overwrite', 'abort', 'ignore'])
-      .default('newest')
+      .choices(['restore', 'abort', 'replace', 'keep'])
+      .default('keep')
   )
   .addOption(
     new Option(
