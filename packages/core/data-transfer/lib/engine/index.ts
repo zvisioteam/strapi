@@ -79,6 +79,10 @@ export class TransferEngine implements ITransferEngine {
     const sourceMetadata = await this.sourceProvider.getMetadata();
     const destinationMetadata = await this.destinationProvider.getMetadata();
 
+    if (!sourceMetadata || !destinationMetadata) {
+      return true;
+    }
+
     try {
       // Version check
       this.assertIntegrityStrapiVersion(
@@ -107,7 +111,8 @@ export class TransferEngine implements ITransferEngine {
 
       await this.transferEntities();
 
-      // await this.transferLinks();
+      await this.transferLinks();
+
       // await this.transferMedia();
       // await this.transferConfiguration();
 
@@ -133,12 +138,12 @@ export class TransferEngine implements ITransferEngine {
         // We might want to use a json-chain's Chain here since they allow transforms
         // streams as regular functions (that allows object as parameter & return type)
         inStream as any,
-        chain([
-          (data) => {
-            console.log('hello', data);
-            return data;
-          },
-        ]),
+        // chain([
+        //   (data) => {
+        //     console.log('hello', data);
+        //     return data;
+        //   },
+        // ]),
         outStream as any,
         (e: Error) => {
           if (e) {
@@ -155,7 +160,38 @@ export class TransferEngine implements ITransferEngine {
   }
 
   async transferLinks(): Promise<void> {
-    throw new Error('Not implemented');
+    if (!this.sourceProvider.streamLinks || !this.destinationProvider.getLinksStream) {
+      return;
+    }
+
+    const inStream = await this.sourceProvider.streamLinks();
+    const outStream = await this.destinationProvider.getLinksStream();
+
+    return new Promise((resolve, reject) => {
+      resolve();
+      // pipeline(
+      //   // We might want to use a json-chain's Chain here since they allow transforms
+      //   // streams as regular functions (that allows object as parameter & return type)
+      //   inStream as any,
+      //   // chain([
+      //   //   (data) => {
+      //   //     console.log('hello', data);
+      //   //     return data;
+      //   //   },
+      //   // ]),
+      //   outStream as any,
+      //   (e: Error) => {
+      //     if (e) {
+      //       console.log('Something wrong happened', e);
+      //       reject(e);
+      //       return;
+      //     }
+
+      //     console.log('All the links have been transferred');
+      //     resolve();
+      //   }
+      // );
+    });
   }
 
   async transferMedia(): Promise<void> {

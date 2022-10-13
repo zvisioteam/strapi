@@ -90,18 +90,13 @@ export class LocalFileSourceProvider implements ISourceProvider {
           onentry(entry) {
             const entitiesTransforms = [
               // Decryption
-              decrypt('secret_key').decipher(),
+              decrypt('Hello World!').decipher(),
               // Decompression
-              createGunzip(),
+              // createGunzip(),
               // JSONL parsing
               parser(),
               // Only keep the value property from the parsed data
               get('value'),
-              // Decrypted data log
-              (data: any) => {
-                console.log('After decrypt', data);
-                return data;
-              },
             ];
 
             entry

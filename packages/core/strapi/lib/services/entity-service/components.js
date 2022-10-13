@@ -326,11 +326,12 @@ const deleteComponents = async (uid, entityToDelete) => {
 // components can have nested compos so this must be recursive
 const createComponent = async (uid, data) => {
   const model = strapi.getModel(uid);
+  const sanitizedData = omit('id', data);
 
-  const componentData = await createComponents(uid, data);
+  const componentData = await createComponents(uid, sanitizedData);
 
   return strapi.query(uid).create({
-    data: Object.assign(omitComponentData(model, data), componentData),
+    data: Object.assign(omitComponentData(model, sanitizedData), componentData),
   });
 };
 

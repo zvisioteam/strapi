@@ -1,3 +1,0 @@
-{"source":{"type":"api::author.author","ref":1},"target":{"type":"api::article.article","ref":1}}
-{"source":{"type":"api::author.author","ref":1},"target":{"type":"api::article.article","ref":2}}
-{"source":{"type":"api::author.author","ref":2},"target":{"type":"api::article.article","ref":3}}

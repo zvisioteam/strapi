@@ -31,7 +31,7 @@ const encrypt = (password: string, algorithm: string = 'aes-128-ecb') => {
 const decrypt = (password: string, initVector?: string, algorithm: string = 'aes-128-ecb') => {
   // hashing the password
   const securitykey = createHash('sha256').update(password).digest('base64').slice(0, 16);
-  console.log('securityKey ===> ', securitykey);
+
   return {
     // Create a decipher
     decipher: (): Decipher => {

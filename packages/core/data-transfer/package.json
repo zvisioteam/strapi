@@ -34,10 +34,12 @@
     "lib": "./dist"
   },
   "dependencies": {
+    "@strapi/logger": "4.4.3",
+    "prettier": "2.7.1",
     "stream-chain": "2.2.5",
     "stream-json": "1.7.4",
     "tar": "6.1.11",
-    "prettier": "2.7.1"
+    "chalk": "4.1.2"
   },
   "devDependencies": {
     "typescript": "4.8.4"

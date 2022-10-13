@@ -49,8 +49,18 @@ export class LocalFileDestinationProvider implements IDestinationProvider {
   }
 
   getEntitiesStream(): Stream {
-    const shouldEncrypt = true;
-    const maxFileSize = 1000;
+    const options = {
+      encryption: {
+        enabled: true,
+        key: 'Hello World!',
+      },
+      compression: {
+        enabled: false,
+      },
+      file: {
+        maxSize: 100000,
+      },
+    };
 
     const filePathFactory = (fileIndex: number = 0) => {
       return path.join(
@@ -64,21 +74,68 @@ export class LocalFileDestinationProvider implements IDestinationProvider {
     };
 
     const streams: any[] = [
-      // jsonl strings
+      // create jsonl strings from object entities
       stringer(),
-      // compressed lines
-      zip.createGzip(),
     ];
 
-    if (shouldEncrypt) {
-      const encryptionStream = encrypt('secret_key').cipher();
-
-      // encrypted lines
-      streams.push(encryptionStream);
+    // Compression
+    if (options.compression?.enabled) {
+      streams.push(zip.createGzip());
     }
 
-    // write to files
-    streams.push(createMultiFilesWriteStream(filePathFactory, maxFileSize));
+    // Encryption
+    if (options.encryption?.enabled) {
+      streams.push(encrypt(options.encryption.key).cipher());
+    }
+
+    // FS write stream
+    streams.push(createMultiFilesWriteStream(filePathFactory, options.file?.maxSize));
+
+    return chain(streams);
+  }
+
+  getLinksStream(): Stream {
+    const options = {
+      encryption: {
+        enabled: true,
+        key: 'Hello World!',
+      },
+      compression: {
+        enabled: false,
+      },
+      file: {
+        maxSize: 100000,
+      },
+    };
+
+    const filePathFactory = (fileIndex: number = 0) => {
+      return path.join(
+        // Backup path
+        this.options.backupFilePath,
+        // "links/" directory
+        'links',
+        // "links_00000.jsonl" file
+        `links_${String(fileIndex).padStart(5, '0')}.jsonl`
+      );
+    };
+
+    const streams: any[] = [
+      // create jsonl strings from object links
+      stringer(),
+    ];
+
+    // Compression
+    if (options.compression?.enabled) {
+      streams.push(zip.createGzip());
+    }
+
+    // Encryption
+    if (options.encryption?.enabled) {
+      streams.push(encrypt(options.encryption.key).cipher());
+    }
+
+    // FS write stream
+    streams.push(createMultiFilesWriteStream(filePathFactory, options.file?.maxSize));
 
     return chain(streams);
   }
