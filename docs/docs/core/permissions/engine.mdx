@@ -1,0 +1,51 @@
+---
+title: Permission Engine
+slug: /permissions/permission-engine
+tags:
+  - permissions
+  - engine
+  - factory
+  - ability
+---
+
+# Permission Engine
+
+## Summary
+
+The permission engine is an entity capable of managing complex permission operations and dealing with business rules.
+
+Its goal is to provide a default implementation that can be customized and augmented by higher level implementations.
+
+For instance, at Strapi we're using different encapsulations of the default permission engine to power our various auth systems (RBAC, content-API)
+
+```mermaid
+graph relation engine + rbac + content api
+```
+
+## Design
+
+```mermaid
+graph showing the structure of the engine
+```
+
+Talk about abilities, permissions, registries, etc...
+
+## Generating an ability
+
+```mermaid
+graphql explaining how the generateAbility works
+```
+
+Flow when generating an ability, different hooks, allowed customizations, etc...
+
+## Usage
+
+The `@strapi/permissions` exports a factory allowing anyone to create a new instance of a default permission engine.
+
+To test it, use the following snippet
+
+```js
+const { engine } = require('@strapi/permissions');
+
+const myEngine = engine.new(/** ... */);
+```

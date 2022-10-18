@@ -1,0 +1,204 @@
+---
+title: Domain
+slug: /permissions/domain
+tags:
+  - domain
+  - permissions
+
+toc_min_heading_level: 2
+toc_max_heading_level: 4
+---
+
+## Summary {#summary}
+
+The `@strapi/permissions` domain is exported so that it can be used to manipulate common objects linked to this package, such as [permissions](#domain-permissions).
+
+## API {#api}
+
+```js
+const { domain } = require('@strapi/permissions');
+```
+
+### Permissions {#domain-permissions}
+
+The `permissions` domain API is used to create and manipulate Strapi permission objects.
+
+```js
+const { permissions } = domain;
+```
+
+#### `create` {#domain-permissions-create}
+
+##### Definition {#domain-permissions-create-definition}
+
+Create a new Strapi permission object with default values for optional properties.
+
+##### Parameters {#domain-permissions-create-parameters}
+
+| Property   | Type       | Required | Default Value | Description                                                       |
+| ---------- | ---------- | -------- | ------------- | ----------------------------------------------------------------- |
+| action     | `string`   | true     |               | The action that defines the permission                            |
+| subject    | `string`   | false    | `null`        | Specify the subject target by the permission                      |
+| properties | `object`   | false    | `{}`          | Map of properties name with their options                         |
+| conditions | `string[]` | false    | `[]`          | List of conditions (uids) to apply when evaluating the permission |
+
+##### Examples {#domain-permissions-create-examples}
+
+Create a simple permission that grants the `read` action.
+
+```js
+permissions.create({ action: 'read' });
+
+// { action: 'read', subject: null, properties: {}, conditions: [] }
+```
+
+Create a permission which grant the `read` action to `article` subjects only.
+
+```js
+permissions.create({ action: 'read', subject: 'article' });
+
+// { action: 'read', subject: 'article', properties: {}, conditions: [] }
+```
+
+Create a permission which grant the `read` action only if the current day is Monday.
+
+:::note
+When using a permission engine instance to manipulate your permissions, the conditions will be evaluated each time you're generating a new ability. For more information about the permission engine or abilities, [click here](/permissions/permission-engine)
+:::
+
+```js
+permissions.create({ action: 'read', conditions: ['is-monday'] });
+
+// { action: 'read', subject: null, properties: {}, conditions: ['is-monday'] }
+```
+
+Create a permission which grant the `read` action on the `id` and `createdAt` fields of the targeted entity.
+
+```js
+permissions.create({ action: 'read', properties: { fields: ['id', 'createdAt'] } });
+
+// { action: 'read', subject: null, properties: { fields: ['id', 'createdAt']}, conditions: [] }
+```
+
+---
+
+#### `sanitizePermissionFields` {#domain-permissions-sanitize-permission-fields}
+
+##### Definition {#domain-permissions-sanitize-permission-fields-definition}
+
+Sanitize the properties of an object to only keep valid permission fields.
+
+Allowed fields are:
+
+- `action`
+- `subject`
+- `conditions`
+- `properties`
+
+##### Parameters {#domain-permissions-sanitize-permission-fields-parameters}
+
+| Property   | Type     | Required | Description                       |
+| ---------- | -------- | -------- | --------------------------------- |
+| permission | `object` | true     | The permission object to sanitize |
+
+##### Examples {#domain-permissions-sanitize-permission-fields-examples}
+
+Remove the `customProperty` from the given object.
+
+```js
+permissions.sanitizePermissionFields({ action: 'read', customProperty: 'foobar' }); // { action: 'read' }
+```
+
+---
+
+#### `addCondition` {#domain-permissions-add-condition}
+
+##### Definition {#domain-permissions-add-condition-definition}
+
+Add the given `condition` to the `conditions` property of a Strapi permission.
+
+It returns a new Strapi permission and doesn't mutate the original object.
+
+:::note
+If the `conditions` property is not defined, then it will be initialized to an array containing only the given condition.
+:::
+
+##### Parameters {#domain-permissions-add-condition-parameters}
+
+| Property   | Type     | Required | Description                                                                        |
+| ---------- | -------- | -------- | ---------------------------------------------------------------------------------- |
+| condition  | `string` | true     | The `uid` of the Strapi condition                                                  |
+| permission | `object` | true     | The permission object in which we want to add the condition. It won't be modified. |
+
+##### Examples {#domain-permissions-add-condition-examples}
+
+Create a new permission object based on `myPermission` and add an `is-friday` condition.
+
+:::note
+The original `myPermission` object is not mutated.
+:::
+
+```js
+const myPermission = { action: 'read', conditions: ['is-monday'] };
+
+permissions.addCondition('is-friday', myPermission); // { action: 'read', conditions: ['is-monday', 'is-friday'] }
+
+// myPermission: { action: 'read', conditions: ['is-monday'] }
+```
+
+Create a new permission object based on `myPermission` and add an `is-friday` condition.
+
+:::note
+Since `myPermission` doesn't have a `conditions` property yet, it is created in the new object.
+:::
+
+```js
+const myPermission = { action: 'read' };
+
+permissions.addCondition('is-friday', myPermission); // { action: 'read', conditions: ['is-friday'] }
+```
+
+---
+
+#### `getProperty` {#domain-permissions-get-property}
+
+##### Definition {#domain-permissions-get-property-definition}
+
+Utility used to extract a specific property from a permission object.
+
+:::note
+If the `properties` attribute is not defined in the permission object, then the function will return undefined.
+:::
+
+##### Parameters {#domain-permissions-get-property-parameters}
+
+| Property   | Type     | Required | Description                                                       |
+| ---------- | -------- | -------- | ----------------------------------------------------------------- |
+| property   | `string` | true     | The name of the property to extract                               |
+| permission | `object` | true     | The permission object in which we want to search for the property |
+
+##### Examples {#domain-permissions-get-property-examples}
+
+Get the `locales` property from `myPermission`.
+
+```js
+const myPermission = { action: 'read', properties: { locales: ['fr', 'en'], fields: ['id'] } };
+
+permissions.getProperty('locales', myPermission); // ['fr', 'en']
+```
+
+Try to get the `locales` property from `myPermission`, which doesn't exist in the `properties` attribute.
+
+```js
+const myPermission = { action: 'read', properties: { fields: ['id'] } };
+
+permissions.getProperty('locales', myPermission); // undefined
+```
+
+Try to get the `locales` property from `myPermission`, which doesn't have any `properties` attribute.
+
+```js
+const myPermission = { action: 'read' };
+
+permissions.getProperty('locales', myPermission); // undefined
+```

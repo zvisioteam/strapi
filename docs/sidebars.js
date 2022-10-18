@@ -26,6 +26,15 @@ const sidebars = {
       items: [
         {
           type: 'category',
+          label: 'Admin',
+          link: {
+            type: 'doc',
+            id: 'core/admin/intro',
+          },
+          items: ['core/admin/api-tokens'],
+        },
+        {
+          type: 'category',
           label: 'Content Manager',
           link: {
             type: 'doc',
@@ -41,6 +50,15 @@ const sidebars = {
             id: 'core/content-type-builder/intro',
           },
           items: ['example'],
+        },
+        {
+          type: 'category',
+          label: 'Permissions',
+          link: {
+            type: 'doc',
+            id: 'core/permissions/intro',
+          },
+          items: ['core/permissions/engine', 'core/permissions/domain'],
         },
       ],
     },
