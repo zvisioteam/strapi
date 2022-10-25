@@ -9,7 +9,7 @@ const {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } = require('apollo-server-core');
 const depthLimit = require('graphql-depth-limit');
-const { graphqlUploadKoa } = require('graphql-upload');
+// const { graphqlUploadKoa } = require('graphql-upload');
 const formatGraphqlError = require('./format-graphql-error');
 
 const merge = mergeWith((a, b) => {
@@ -23,7 +23,8 @@ const merge = mergeWith((a, b) => {
  * @param {object} strapi
  * @param {string} path
  */
-const useUploadMiddleware = (strapi, path) => {
+const useUploadMiddleware = async (strapi, path) => {
+  const { default: graphqlUploadKoa } = await import('graphql-upload/graphqlUploadKoa.mjs');
   const uploadMiddleware = graphqlUploadKoa();
 
   strapi.server.app.use((ctx, next) => {
@@ -103,7 +104,7 @@ module.exports = async ({ strapi }) => {
   const server = new ApolloServer(serverConfig);
 
   // Register the upload middleware
-  useUploadMiddleware(strapi, path);
+  await useUploadMiddleware(strapi, path);
 
   try {
     // Since Apollo-Server v3, server.start() must be called before using server.applyMiddleware()

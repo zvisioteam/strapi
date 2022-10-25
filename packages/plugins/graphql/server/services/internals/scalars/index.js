@@ -1,8 +1,8 @@
 'use strict';
 
 const { GraphQLDateTime, GraphQLLong, GraphQLJSON } = require('graphql-scalars');
-const { GraphQLUpload } = require('graphql-upload');
-const { asNexusMethod } = require('nexus');
+// const { GraphQLUpload } = require('graphql-upload');
+const { asNexusMethod, scalarType, Kind } = require('nexus');
 
 const TimeScalar = require('./time');
 const GraphQLDate = require('./date');
@@ -13,5 +13,8 @@ module.exports = () => ({
   Time: asNexusMethod(TimeScalar, 'time'),
   Date: asNexusMethod(GraphQLDate, 'date'),
   Long: asNexusMethod(GraphQLLong, 'long'),
-  Upload: asNexusMethod(GraphQLUpload, 'upload'),
+  async Upload() {
+    const { default: GraphQLUpload } = await import('graphql-upload/GraphQLUpload.mjs');
+    return asNexusMethod(GraphQLUpload, 'upload');
+  },
 });
