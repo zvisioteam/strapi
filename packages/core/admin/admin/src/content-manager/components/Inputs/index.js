@@ -1,4 +1,4 @@
-import React, { Suspense, memo, useMemo } from 'react';
+import React, { Suspense, memo, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import get from 'lodash/get';
@@ -48,6 +48,7 @@ function Inputs({
   const { formatMessage } = useIntl();
   const { contentType: currentContentTypeLayout } = useContentTypeLayout();
   const customFieldsRegistry = useCustomFields();
+  const lazyComponentStore = useRef({}).current;
 
   const disabled = useMemo(() => !get(metadatas, 'editable', true), [metadatas]);
   const { type, customField: customFieldUid } = fieldSchema;
@@ -200,18 +201,10 @@ function Inputs({
     return minutes % metadatas.step === 0 ? metadatas.step : step;
   }, [inputType, inputValue, metadatas.step, step]);
 
-  // Memoize the component to avoid remounting it and losing state
-  const CustomFieldInput = useMemo(() => {
-    if (customFieldUid) {
-      const customField = customFieldsRegistry.get(customFieldUid);
-      const CustomFieldInput = React.lazy(customField.components.Input);
-
-      return CustomFieldInput;
-    }
-
-    // Not a custom field, component won't be used
-    return null;
-  }, [customFieldUid, customFieldsRegistry]);
+  if (customFieldUid && !lazyComponentStore[customFieldUid]) {
+    const customField = customFieldsRegistry.get(customFieldUid);
+    lazyComponentStore[customFieldUid] = React.lazy(customField.components.Input);
+  }
 
   if (visible === false) {
     return null;
@@ -274,11 +267,8 @@ function Inputs({
     media: fields.media,
     wysiwyg: Wysiwyg,
     ...fields,
+    ...lazyComponentStore,
   };
-
-  if (customFieldUid) {
-    customInputs[customFieldUid] = CustomFieldInput;
-  }
 
   return (
     <Suspense fallback={<LoadingIndicatorPage />}>
