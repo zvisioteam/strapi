@@ -1,6 +1,6 @@
 module.exports = {
   rootDir: __dirname,
-  setupFilesAfterEnv: ['<rootDir>/test/unit.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/test/setup/unit.setup.js'],
   modulePathIgnorePatterns: ['.cache'],
   testMatch: ['/**/__tests__/**/*.[jt]s?(x)'],
   // Use `jest-watch-typeahead` version 0.6.5. Newest version 1.0.0 does not support jest@26
