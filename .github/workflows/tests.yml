@@ -59,6 +59,8 @@ jobs:
     name: 'unit_front (node: ${{ matrix.node }})'
     needs: [lint]
     runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.codecov }}
     strategy:
       matrix:
         node: [14, 16, 18]
@@ -74,13 +76,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Run test
-        run: yarn run -s test:front --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage
-          flags: front,unit_front
+        run: yarn run -s test:front --coverage && codecov -C -F front
 
   api_ce_pg:
     runs-on: ubuntu-latest

@@ -1,7 +1,12 @@
 name: 'Install modules'
-description: 'Run yarn install'
+description: 'Global packages to install'
+inputs:
+  globalPackages:
+    description: whatever
 runs:
   using: 'composite'
   steps:
     - run: $GITHUB_ACTION_PATH/script.sh
       shell: bash
+      env:
+        GLOBAL_PACKAGES: ${{ inputs.globalPackages }}
